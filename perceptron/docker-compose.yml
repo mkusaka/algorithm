@@ -1,0 +1,10 @@
+version: '3'
+services:
+  main:
+    image: mkusaka/deepo:slim-seabon
+    volumes:
+    - ./src:/root/src/
+    entrypoint:
+      - tail
+      - -f
+      - /dev/null
