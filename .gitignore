@@ -12,6 +12,8 @@
 
 project/
 target/
+!languages/scala/07_simple_build_tool/project/
+!languages/scala/07_simple_build_tool/project/target/
 ### https://raw.github.com/github/gitignore/44cbb3686c18f634a488ea123d1148ca9a64fa22/Ruby.gitignore
 
 *.gem
