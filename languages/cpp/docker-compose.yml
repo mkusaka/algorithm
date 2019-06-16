@@ -1,0 +1,14 @@
+version: '3'
+services:
+  main:
+    image: mkusaka/compiler_env:2019-6-16
+    volumes:
+    - ./src:/home/src/
+    entrypoint:
+      - tail
+      - -f
+      - /dev/null
+    cap_add:
+      - SYS_PTRACE
+    # security_opt:
+    #   - seccomp
