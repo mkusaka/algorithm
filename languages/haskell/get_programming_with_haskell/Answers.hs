@@ -32,3 +32,13 @@ isFirstHalf e arr = if e `elem` firstHalf
                     else False
                     where firstHalf = take (quot (length arr) 2) arr
 
+
+-- Q9.1
+myelm e arr = length(filter (\x -> x == e) arr) > 0
+
+-- Q9.3
+-- rescusive
+harmonic 1 = 1
+harmonic threadshold = 1 / threadshold + harmonic (threadshold -1)
+
+-- command memo: ghci && :l Answers.hs
