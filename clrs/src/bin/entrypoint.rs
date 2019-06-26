@@ -1,7 +1,7 @@
 extern crate clrs;
 
-use clrs::test;
+use clrs::sort_test;
 
 pub fn main() {
-  test();
+  sort_test();
 }
