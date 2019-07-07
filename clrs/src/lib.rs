@@ -1,22 +1,22 @@
 pub fn sort_test() {
-    println!("start: sort test");
-    let mut x = vec![10, 30, 11, 20, 4, 330, 220, 4440, 10, 1, 444, 4423, 8236, 23, 324, 76];
-    insertion_sort(&mut x);
+    let x = vec![10, 30, 11, 20, 4, 330, 220, 4440, 10, 1, 444, 4423, 8236, 23, 324, 76];
+    // let x = vec![2, 1];
+    let y = insertion_sort(x);
     // fail test
-    assert_eq!(x, vec![1, 4, 10, 10, 11, 20, 23, 30, 76, 220, 324, 330, 444, 4423, 4440, 8236]);
-    println!("finish: sort test");
+    assert_eq!(y, vec![1, 4, 10, 10, 11, 20, 23, 30, 76, 220, 324, 330, 444, 4423, 4440, 8236]);
 }
 
-pub fn insertion_sort(output: &mut [u32]) {
-    for j in 2..output.len() {
+pub fn insertion_sort(arr: Vec<u32>) -> Vec<u32> {
+    let mut output = arr.clone();
+    for j in 1..output.len() {
         let key = output[j];
-        let mut i = j - 1;
-        while i > 0 && output[i] > key {
-            output[i + 1] = output[i];
+        let mut i = (j as i8) - 1;
+        while i >= 0 && output[i as usize] > key {
+            output[(i as usize) + 1] = output[i as usize];
+            println!("current i: {:?}", i);
             i = i - 1;
         }
-        output[i + 1] = key;
-        println!("print{:?}", output)
+        output[(i + 1) as usize] = key;
     }
-    println!("print{:?}", output);
+    return output;
 }
