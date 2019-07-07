@@ -104,3 +104,5 @@ ENV/
 
 .local/
 .ipython/
+.cache/
+.jupyter/
