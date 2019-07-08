@@ -77,11 +77,11 @@ Number.new(1).reducible?
 
 # 監訳するメソッド郡
 class Add
-  def reduce
+  def reduce(environment)
     if left.reducible?
-      Add.new(left.reduce, right)
+      Add.new(left.reduce(environment), right)
     elsif right.reducible?
-      Add.new(left, right.reduce)
+      Add.new(left, right.reduce(environment))
     else
       Number.new(left.value + right.value)
     end
@@ -89,11 +89,11 @@ class Add
 end
 
 class Multiply
-  def reduce
+  def reduce(environment)
     if left.reducible?
-      Multiply.new(left.reduce, right)
+      Multiply.new(left.reduce(environment), right)
     elsif right.reducible?
-      Multiply.new(left, right.reduce)
+      Multiply.new(left, right.reduce(environment))
     else
       Number.new(left.value * right.value)
     end
@@ -110,14 +110,14 @@ epressin = Add.new(
     Number.new(4)
   )
 )
-expression.reduce
-epxression.reduce ...
+expression.reduce(environment)
+epxression.reduce(environment) ...
 =end
 
 # 簡約をやってくれる仮想機械
 class Machine < Struct.new(:expression)
   def step
-    self.expression = expression.reduce
+    self.expression = expression.reduce(environment)
   end
 
   def run
@@ -170,11 +170,11 @@ class LessThan < Struct.new(:left, :right)
     true
   end
 
-  def reduce
+  def reduce(environment)
     if left.reducible?
-      LessThan.new(left.reduce, right)
+      LessThan.new(left.reduce(environment), right)
     elsif righ.reducible?
-      LessThan.new(left, right.reduce)
+      LessThan.new(left, right.reduce(environment))
     else
       Boolean.new(left.value < right.value)
     end
@@ -185,3 +185,23 @@ Machine.new(
   LessThan/new(Number.new(5), Add.new(Number.new(2), NUmber.new(2)))
 )
 =end
+
+# 変数のclass
+class Variable < Struct.new(:name)
+  def to_s
+    name.to_s
+  end
+
+  def inspect
+    "<<#{self}>>"
+  end
+
+  def reducible?
+    true
+  end
+
+  def reduce(environment)
+    environment[name]
+  end
+end
+
