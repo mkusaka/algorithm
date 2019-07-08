@@ -1,0 +1,4 @@
+#!/bin/bash
+
+bundle install --path=vendor/bundle --jobs=4 --retry=3
+bundle exec ruby bin/pry.rb

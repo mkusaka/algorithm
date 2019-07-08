@@ -15,3 +15,8 @@
 - 小さなステップに分解し、監訳することでプログラムを評価する
   - スモールステップ意味論
 - 簡約関係、推論規則
+
+# cmd
+```
+bundle install --path=vendor/bundle --jobs=4 --retry=3
+```
