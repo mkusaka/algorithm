@@ -24,7 +24,7 @@ main() {
         if (max < others) {
           int sum = a[i] + a[j] + a[k];
           if (initial < sum) {
-            initial = sum
+            initial = sum;
           }
         }
       }
