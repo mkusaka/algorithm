@@ -1,0 +1,4 @@
+#!/bin/bash
+FN=ex$1.cc
+echo \#include \<bits/stdc++.h\> > $FN
+code $FN
