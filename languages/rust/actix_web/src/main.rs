@@ -1,4 +1,4 @@
-use actix_web::{Error, FromRequest, Path, server, App, HttpRequest, Responder};
+use actix_web::{Path, server, App, HttpRequest, Responder};
 use serde_derive::*;
 
 #[derive(Deserialize)]
@@ -6,9 +6,8 @@ struct HelloPath {
     name: String,
 }
 
-fn hello_name(req: &HttpRequest) -> Result<String, Error> {
-    let to = Path::<HelloPath>::extract(req)?;
-    Ok(format!("Hello {}!", &to.name))
+fn hello_name(to: Path<HelloPath>) -> impl Responder {
+    format!("Hello {}!", &to.name)
 }
 
 fn hello(req: &HttpRequest) -> impl Responder {
@@ -20,7 +19,7 @@ fn main() {
     server::new(|| {
         App::new()
             .resource("/", |r| r.f(hello))
-            .resource("/{name}", |r| r.f(hello))
+            .resource("/{name}", |r| r.with(hello_name))
     })
     .bind("localhost:3000")
     .expect("Can not bin to port 3000")
