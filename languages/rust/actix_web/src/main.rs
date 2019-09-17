@@ -1,4 +1,15 @@
-use actix_web::{server, App, HttpRequest, Responder};
+use actix_web::{Error, FromRequest, Path, server, App, HttpRequest, Responder};
+use serde_derive::*;
+
+#[derive(Deserialize)]
+struct HelloPath {
+    name: String,
+}
+
+fn hello_name(req: &HttpRequest) -> Result<String, Error> {
+    let to = Path::<HelloPath>::extract(req)?;
+    Ok(format!("Hello {}!", &to.name))
+}
 
 fn hello(req: &HttpRequest) -> impl Responder {
     let to = req.match_info().get("name").unwrap_or("World");
