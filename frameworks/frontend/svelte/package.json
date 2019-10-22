@@ -1,0 +1,9 @@
+{
+  "name": "svelte",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "degit": "^2.1.4"
+  }
+}
