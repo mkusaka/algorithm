@@ -2,21 +2,13 @@ package main
 
 import (
 	"fmt"
-	"strconv"
+	"reflect"
 )
 
-type Human struct {
-	name  string
-	age   int
-	phone string
-}
-
-// fmt.Printlnはstringを返すString() メソッドを呼び出すので、これを実装すればPrintln内で呼ばれる
-func (h Human) String() string {
-	return "❰" + h.name + " - " + strconv.Itoa(h.age) + " years - " + h.phone + "❱"
-}
-
 func main() {
-	Bob := Human{"Bob", 39, "000-7777-XXX"}
-	fmt.Println("This Human is : ", Bob)
+	var x float64 = 3.4
+	v := reflect.ValueOf(x)
+	fmt.Println("type:", v.Type())
+	fmt.Println("kind is float64:", v.Kind() == reflect.Float64)
+	fmt.Println("value:", v.Float())
 }
