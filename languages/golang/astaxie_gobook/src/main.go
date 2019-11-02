@@ -2,21 +2,30 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"net/http"
+	"strings"
 )
 
-func fibonacci(n int, c chan int) {
-	x, y := 1, 1
-	for i := 0; i < n; i++ {
-		c <- x
-		x, y = y, x+y
+func helloname(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	fmt.Println(r.Form)
+	fmt.Println("path", r.URL.Path)
+	fmt.Println("scheme", r.URL.Scheme)
+	fmt.Println(r.Form["url_long"])
+
+	for k, v := range r.Form {
+		fmt.Println("key:", k)
+		fmt.Println("val:", strings.Join(v, ""))
 	}
-	close(c)
+
+	fmt.Fprintf(w, "hello name")
 }
 
 func main() {
-	c := make(chan int, 10)
-	go fibonacci(cap(c), c)
-	for i := range c {
-		fmt.Println(i)
+	http.HandleFunc("/", helloname)
+	err := http.ListenAndServe(":9090", nil)
+	if err != nil {
+		log.Fatal("fail", err)
 	}
 }
