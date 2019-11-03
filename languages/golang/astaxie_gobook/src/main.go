@@ -1,11 +1,15 @@
 package main
 
 import (
+	"crypto/md5"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 	"text/template"
+	"time"
 )
 
 func helloname(w http.ResponseWriter, r *http.Request) {
@@ -26,13 +30,25 @@ func helloname(w http.ResponseWriter, r *http.Request) {
 func login(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("method", r.Method)
 	if r.Method == "GET" {
+		crutime := time.Now().Unix()
+		h := md5.New()
+		io.WriteString(h, strconv.FormatInt(crutime, 10))
+		token := fmt.Sprintf("%x", h.Sum(nil))
 		t, _ := template.ParseFiles("src/templates/login.gtpl")
-		t.Execute(w, nil)
+		t.Execute(w, token)
 	} else {
 		// ログイン判断ロジックの実行
 		r.ParseForm()
-		fmt.Println("username:", r.Form["username"])
-		fmt.Println("password", r.Form["password"])
+		token := r.Form.Get("token")
+		if token != "" {
+			// check validness of token
+		} else {
+			return // error
+		}
+		fmt.Println("username length:", len(r.Form["username"][0]))
+		fmt.Println("username:", template.HTMLEscapeString(r.Form.Get("username"))) //サーバ側に出力します。
+		fmt.Println("password:", template.HTMLEscapeString(r.Form.Get("password")))
+		template.HTMLEscape(w, []byte(r.Form.Get("username"))) //クライアントに出力します。
 	}
 }
 
