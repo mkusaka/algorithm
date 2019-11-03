@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"text/template"
 )
 
 func helloname(w http.ResponseWriter, r *http.Request) {
@@ -22,8 +23,22 @@ func helloname(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "hello name")
 }
 
+func login(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("method", r.Method)
+	if r.Method == "GET" {
+		t, _ := template.ParseFiles("src/templates/login.gtpl")
+		t.Execute(w, nil)
+	} else {
+		// ログイン判断ロジックの実行
+		r.ParseForm()
+		fmt.Println("username:", r.Form["username"])
+		fmt.Println("password", r.Form["password"])
+	}
+}
+
 func main() {
 	http.HandleFunc("/", helloname)
+	http.HandleFunc("/login", login)
 	err := http.ListenAndServe(":9090", nil)
 	if err != nil {
 		log.Fatal("fail", err)
