@@ -3,43 +3,29 @@ package main
 import (
 	"encoding/xml"
 	"fmt"
+	"os"
 )
 
-type Reculyservers struct {
-	XMLName     xml.Name `xml:"servers"`
-	Version     string   `xml:"version,attr"`
-	Svs         []server `xml:"server"`
-	Description string   `xml:",innerxml"`
+type Servers struct {
+	XMLName xml.Name `xml:"servers"`
+	Version string   `xml:"version,attr"`
+	Svs     []server `xml:"server"`
 }
 
 type server struct {
-	XMLName    xml.Name `xml:"server"`
-	ServerName string   `xml:"serverName"`
-	ServerIP   string   `xml:"serverIP"`
+	ServerName string `xml:"serverName"`
+	ServerIP   string `xml:"serverIP"`
 }
 
 func main() {
-	data := `
-<?xml version="1.0" encoding="utf-8"?>
-<servers version="1">
-    <server>
-        <serverName>Shanghai_VPN</serverName>
-        <serverIP>127.0.0.1</serverIP>
-    </server>
-    <server>
-        <serverName>Beijing_VPN</serverName>
-        <serverIP>127.0.0.2</serverIP>
-    </server>
-</servers>
-`
-	byteData := []byte(data)
-	v := Reculyservers{}
-
-	err := xml.Unmarshal(byteData, &v)
+	v := &Servers{Version: "1"}
+	v.Svs = append(v.Svs, server{"Shanghai_VPN", "127.0.0.1"})
+	v.Svs = append(v.Svs, server{"Beijing_VPN", "127.0.0.2"})
+	output, err := xml.MarshalIndent(v, "  ", "    ")
 	if err != nil {
-		fmt.Printf("error: %v", err)
-		return
+		fmt.Printf("error: %v\n", err)
 	}
+	os.Stdout.Write([]byte(xml.Header))
 
-	fmt.Println(v)
+	os.Stdout.Write(output)
 }
