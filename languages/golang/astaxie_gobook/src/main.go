@@ -1,62 +1,96 @@
 package main
 
 import (
-	"crypto/md5"
+	"database/sql"
 	"fmt"
-	"io"
-	"log"
-	"net/http"
-	"strconv"
-	"strings"
-	"text/template"
-	"time"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
-func helloname(w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()
-	fmt.Println(r.Form)
-	fmt.Println("path", r.URL.Path)
-	fmt.Println("scheme", r.URL.Scheme)
-	fmt.Println(r.Form["url_long"])
-
-	for k, v := range r.Form {
-		fmt.Println("key:", k)
-		fmt.Println("val:", strings.Join(v, ""))
-	}
-
-	fmt.Fprintf(w, "hello name")
-}
-
-func login(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("method", r.Method)
-	if r.Method == "GET" {
-		crutime := time.Now().Unix()
-		h := md5.New()
-		io.WriteString(h, strconv.FormatInt(crutime, 10))
-		token := fmt.Sprintf("%x", h.Sum(nil))
-		t, _ := template.ParseFiles("src/templates/login.gtpl")
-		t.Execute(w, token)
-	} else {
-		// ログイン判断ロジックの実行
-		r.ParseForm()
-		token := r.Form.Get("token")
-		if token != "" {
-			// check validness of token
-		} else {
-			return // error
-		}
-		fmt.Println("username length:", len(r.Form["username"][0]))
-		fmt.Println("username:", template.HTMLEscapeString(r.Form.Get("username"))) //サーバ側に出力します。
-		fmt.Println("password:", template.HTMLEscapeString(r.Form.Get("password")))
-		template.HTMLEscape(w, []byte(r.Form.Get("username"))) //クライアントに出力します。
-	}
-}
-
 func main() {
-	http.HandleFunc("/", helloname)
-	http.HandleFunc("/login", login)
-	err := http.ListenAndServe(":9090", nil)
+	db, err := sql.Open("mysql", "root:mysql@/mtest?charset=utf8")
+	checkErr(err)
+
+	//データの挿入
+	stmt, err := db.Prepare("INSERT userinfo SET username=?,departname=?,created=?")
+	checkErr(err)
+
+	res, err := stmt.Exec("author", "kaihatsu", "2012-12-09")
+	checkErr(err)
+
+	id, err := res.LastInsertId()
+	checkErr(err)
+
+	fmt.Println(id)
+	//データの更新
+	stmt, err = db.Prepare("update userinfo set username=? where uid=?")
+	checkErr(err)
+
+	res, err = stmt.Exec("author", id)
+	checkErr(err)
+
+	affect, err := res.RowsAffected()
+	checkErr(err)
+
+	fmt.Println(affect)
+
+	//データの検索
+	rows, err := db.Query("SELECT * FROM userinfo")
+	checkErr(err)
+
+	for rows.Next() {
+		var uid int
+		var username string
+		var department string
+		var created string
+		err = rows.Scan(&uid, &username, &department, &created)
+		checkErr(err)
+		fmt.Println(uid)
+		fmt.Println(username)
+		fmt.Println(department)
+		fmt.Println(created)
+	}
+
+	//データの削除
+	stmt, err = db.Prepare("delete from userinfo where uid=?")
+	checkErr(err)
+
+	res, err = stmt.Exec(id)
+	checkErr(err)
+
+	affect, err = res.RowsAffected()
+	checkErr(err)
+
+	fmt.Println(affect)
+
+	db.Close()
+
+}
+
+func checkErr(err error) {
 	if err != nil {
-		log.Fatal("fail", err)
+		panic(err)
 	}
 }
+
+/*
+CREATE DATABASE mtest;
+
+use mtest;
+
+CREATE TABLE `userinfo` (
+    `uid` INT(10) NOT NULL AUTO_INCREMENT,
+    `username` VARCHAR(64) NULL DEFAULT NULL,
+    `departname` VARCHAR(64) NULL DEFAULT NULL,
+    `created` DATE NULL DEFAULT NULL,
+    PRIMARY KEY (`uid`)
+);
+
+CREATE TABLE `userdetail` (
+    `uid` INT(10) NOT NULL DEFAULT '0',
+    `intro` TEXT NULL,
+    `profile` TEXT NULL,
+    PRIMARY KEY (`uid`)
+);
+
+*/
