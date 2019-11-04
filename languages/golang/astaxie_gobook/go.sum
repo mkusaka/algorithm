@@ -1,3 +1,5 @@
+github.com/astaxie/session v0.0.0-20130408050157-95d7fe18579c h1:FcFM+gBQ9Os0GEs3OOk9bmq3sHj8VkiRYHIpiLFfZSI=
+github.com/astaxie/session v0.0.0-20130408050157-95d7fe18579c/go.mod h1:0t1M8SLguRDiNomJJpdjSW2cifFnPTIX0HNL9MyMC78=
 github.com/kr/pretty v0.1.0 h1:L/CwN0zerZDmRFUapSPitk6f+Q3+0za1rQkzVuMiMFI=
 github.com/kr/pretty v0.1.0/go.mod h1:dAy3ld7l9f0ibDNOQOHHMYYIIbhfbHSm3C4ZsoJORNo=
 github.com/kr/pty v1.1.1/go.mod h1:pFQYn66WHrOpPYNljwOMqo10TkYh1fy3cYio2l3bCsQ=
