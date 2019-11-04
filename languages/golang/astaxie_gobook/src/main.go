@@ -1,33 +1,34 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
+	"html/template"
+	"os"
 )
 
-type Server struct {
-	ServerName string
-	ServerIP   string
+type Friend struct {
+	Fname string
 }
 
-type Serverslice struct {
-	Servers []Server
+type Person struct {
+	UserName string
+	Emails   []string
+	Friends  []*Friend
 }
 
 func main() {
-	var s Serverslice
-	str := `{
-    "servers": [
-        {
-            "serverName": "Shanghai_VPN",
-            "serverIP": "127.0.0.1"
-        },
-        {
-            "serverName": "Beijing_VPN",
-            "serverIP": "127.0.0.2"
-        }
-    ]
-}`
-	json.Unmarshal([]byte(str), &s)
-	fmt.Println(s)
+	f1 := Friend{Fname: "minux.ma"}
+	f2 := Friend{Fname: "xushiwei"}
+	t := template.New("fieldname example")
+	t, _ = t.Parse(`hello {{.UserName}}!
+            {{range .Emails}}
+                an email {{.}}
+            {{end}}
+            {{range .Friends}}
+                my friend name is {{.Fname}}
+            {{end}}
+            `)
+	p := Person{UserName: "Astaxie",
+		Emails:  []string{"astaxie@beego.me", "astaxie@gmail.com"},
+		Friends: []*Friend{&f1, &f2}}
+	t.Execute(os.Stdout, p)
 }
