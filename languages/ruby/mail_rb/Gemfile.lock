@@ -1,0 +1,19 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    gserver (0.0.1)
+    mail (2.7.1)
+      mini_mime (>= 0.1.1)
+    mini-smtp-server (0.0.2)
+    mini_mime (1.0.2)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  gserver
+  mail
+  mini-smtp-server
+
+BUNDLED WITH
+   2.0.1
